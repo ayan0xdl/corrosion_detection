@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrosion Detection</title>
+    <link rel="stylesheet" href="{% static 'rust.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <h1>Corrosion Detection</h1>
+        <p class="subtitle">AI-powered corrosion identification</p>
+    </header>
+
+    <div class="upload-section">
+        <div class="file-input-wrapper">
+            <input type="file" id="imageInput" accept="image/*" class="file-input">
+            <label for="imageInput" class="file-label">
+                <span class="file-icon">📁</span>
+                <span class="file-text">Choose Image</span>
+            </label>
+        </div>
+        <button onclick="runDetection()" class="detect-btn">
+            <span>Detect Corrosion</span>
+        </button>
+    </div>
+
+    <!-- Welcome Section (shown initially) -->
+    <div class="welcome-section" id="welcomeSection">
+        <div class="welcome-content">
+            <div class="welcome-icon">🔍</div>
+            <h2>Get Started</h2>
+            <p>Upload an image to detect corrosion using advanced AI technology powered by YOLOv11.</p>
+            <div class="features">
+                <div class="feature-item">
+                    <span class="feature-icon">⚡</span>
+                    <span>Fast Detection</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🎯</span>
+                    <span>Accurate Results</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📊</span>
+                    <span>Visual Annotations</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Grid (hidden initially, shown after upload) -->
+    <div class="image-grid" id="imageGrid" style="display: none;">
+        <div class="image-card">
+            <div class="card-header">
+                <h3>Original</h3>
+            </div>
+            <div class="image-wrapper">
+                <img id="originalImage" />
+            </div>
+        </div>
+
+        <div class="image-card">
+            <div class="card-header">
+                <h3>Detection Result</h3>
+            </div>
+            <div class="image-wrapper">
+                <img id="resultImage" />
+            </div>
+            <a id="downloadBtn" download class="download-btn" style="display: none;">
+                <span>Download Result</span>
+            </a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Made by <span class="power-ranger">Power Ranger</span> 2026</p>
+    </footer>
+</div>
+
+<script src="{% static 'rust.js' %}"></script>
+</body>
+</html>
