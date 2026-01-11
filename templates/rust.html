@@ -1,85 +1,114 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corrosion Detection</title>
-    <link rel="stylesheet" href="{% static 'rust.css' %}">
-</head>
-<body>
 
-<div class="container">
-    <header class="header">
-        <h1>Corrosion Detection</h1>
-        <p class="subtitle">AI-powered corrosion identification</p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RustVision – Automated Corrosion Detection</title>
+  <link rel="stylesheet" href="{% static 'rust.css' %}">
+</head>
+
+<body>
+  <main>
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar">
+      <nav class="navbar-container">
+        <ul class="nav-menu">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/about" class="nav-link">About</a></li>
+          <li><a href="/process" class="nav-link">Process</a></li>
+        </ul>
+        <a href="/" class="nav-logo">RustVision</a>
+      </nav>
     </header>
 
-    <div class="upload-section">
-        <div class="file-input-wrapper">
-            <input type="file" id="imageInput" accept="image/*" class="file-input">
-            <label for="imageInput" class="file-label">
-                <span class="file-icon">📁</span>
-                <span class="file-text">Choose Image</span>
-            </label>
-        </div>
-        <button onclick="runDetection()" class="detect-btn">
-            <span>Detect Corrosion</span>
+    <!-- ===== MAIN ===== -->
+    <div class="container">
+
+      <h1>RustVision</h1>
+
+      <p class="intro-text">
+        RustVision is an AI-powered computer vision system for automated corrosion
+        detection in industrial infrastructure. Upload an image to analyze surface
+        degradation and visualize corrosion regions.
+      </p>
+
+      <!-- ===== UPLOAD FORM ===== -->
+      <form method="POST" action="/detect/" enctype="multipart/form-data" class="upload-wrapper">
+        {% csrf_token %}
+        <input type="file" id="imageInput" name="image" class="file-input" accept="image/*" multiple required>
+
+        <label for="imageInput" class="upload-box">
+          <span class="upload-text">Upload Image</span>
+        </label>
+
+        <button type="submit" class="detect-btn">
+          Detect Corrosion
         </button>
-    </div>
+      </form>
 
-    <!-- Welcome Section (shown initially) -->
-    <div class="welcome-section" id="welcomeSection">
-        <div class="welcome-content">
-            <div class="welcome-icon">🔍</div>
-            <h2>Get Started</h2>
-            <p>Upload an image to detect corrosion using advanced AI technology powered by YOLOv11.</p>
-            <div class="features">
-                <div class="feature-item">
-                    <span class="feature-icon">⚡</span>
-                    <span>Fast Detection</span>
-                </div>
-                <div class="feature-item">
-                    <span class="feature-icon">🎯</span>
-                    <span>Accurate Results</span>
-                </div>
-                <div class="feature-item">
-                    <span class="feature-icon">📊</span>
-                    <span>Visual Annotations</span>
-                </div>
+      <!-- ===== WELCOME ===== -->
+      {% if not original_image_url %}
+      <div class="welcome-section">
+        <p>Select an image to begin the inspection.</p>
+      </div>
+      {% endif %}
+
+      {% if evaluations %}
+      <section class="result-panel">
+        <div class="results-container multiple-images">
+          {% for eval in evaluations %}
+          <div class="result-card">
+            <h3>Inspection #{{ forloop.counter }}</h3>
+
+            <div class="image-item">
+              <h4>Original Image</h4>
+              <div class="image-wrapper">
+                <img src="{{ eval.original_url }}" alt="Original" />
+              </div>
             </div>
+
+            <div class="image-item">
+              <h4>Detected Corrosion</h4>
+              <div class="image-wrapper">
+                <img src="{{ eval.detected_url }}" alt="Detected" />
+              </div>
+              <a href="{{ eval.detected_url }}" class="download-btn" download style="margin-top:1rem;">
+                Download Image
+              </a>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+              <p style="color:#ddd; margin-bottom:5px;">Confidence: <strong>{{ eval.confidence }}%</strong></p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div style="margin-top:3rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+          {% if evaluations_count == 1 %}
+          <a href="/report/single/" class="download-btn">Download Report (PDF)</a>
+          {% else %}
+          <a href="/report/multiple/" class="download-btn">Download Full PDF Report</a>
+          {% endif %}
+
+          <a href="/clear/" class="download-btn clear-btn">Clear Results</a>
         </div>
     </div>
+    </section>
+    {% endif %}
 
-    <!-- Image Grid (hidden initially, shown after upload) -->
-    <div class="image-grid" id="imageGrid" style="display: none;">
-        <div class="image-card">
-            <div class="card-header">
-                <h3>Original</h3>
-            </div>
-            <div class="image-wrapper">
-                <img id="originalImage" />
-            </div>
-        </div>
-
-        <div class="image-card">
-            <div class="card-header">
-                <h3>Detection Result</h3>
-            </div>
-            <div class="image-wrapper">
-                <img id="resultImage" />
-            </div>
-            <a id="downloadBtn" download class="download-btn" style="display: none;">
-                <span>Download Result</span>
-            </a>
-        </div>
     </div>
 
     <footer class="footer">
-        <p>Made by <span class="power-ranger">Power Ranger</span> 2026</p>
+      <p>© 2026 RustVision · AI for Industrial Inspection</p>
     </footer>
-</div>
 
-<script src="{% static 'rust.js' %}"></script>
+  </main>
+
+  <script src="{% static 'rust.js' %}"></script>
 </body>
+
 </html>
